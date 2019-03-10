@@ -13,9 +13,10 @@ class ModifyOrderCommandTest {
 
     private final Order sellOrderToModify = new Order(2, "sellOrderToModify", OrderSide.SELL, 10, 11);
 
-    private final TreeMap<Integer, TreeMap<Integer, Order>> buyOrders = new TreeMap<>();
-    private final TreeMap<Integer, TreeMap<Integer, Order>> sellOrders = new TreeMap<>();
-    private final HashMap<String, Order> idToOrder = new HashMap<>();
+    private final OrderBook orderBook = new OrderBook();
+    private final TreeMap<Integer, TreeMap<Integer, Order>> buyOrders = orderBook.getBuyOrders();
+    private final TreeMap<Integer, TreeMap<Integer, Order>> sellOrders = orderBook.getSellOrders();
+    private final HashMap<String, Order> idToOrder = orderBook.getIdToOrder();
 
     @BeforeEach
     void setUp() {
@@ -39,7 +40,7 @@ class ModifyOrderCommandTest {
         assertEquals(1, sellOrders.size());
         assertEquals(2, idToOrder.size());
 
-        modifyOrderCommand.execute(buyOrders, sellOrders, idToOrder);
+        modifyOrderCommand.execute(orderBook, null);
 
         Order modifiedBuyOrder = buyOrders.get(9).get(10);
         assertEquals(500, modifiedBuyOrder.getSize());
@@ -61,7 +62,7 @@ class ModifyOrderCommandTest {
         assertEquals(1, sellOrders.size());
         assertEquals(2, idToOrder.size());
 
-        modifyOrderCommand.execute(buyOrders, sellOrders, idToOrder);
+        modifyOrderCommand.execute(orderBook, null);
 
         Order modifiedSellOrder = sellOrders.get(11).get(20);
         assertEquals(500, modifiedSellOrder.getSize());
