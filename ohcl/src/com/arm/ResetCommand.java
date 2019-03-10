@@ -1,12 +1,9 @@
 package com.arm;
 
-import java.util.HashMap;
-import java.util.TreeMap;
-
 /**
  * Command class for clearing all existing orders.
  */
-public class ResetCommand implements Command {
+public class ResetCommand extends Command {
     private final int time;
 
     /**
@@ -19,21 +16,29 @@ public class ResetCommand implements Command {
     }
 
     /**
-     * Executes the command.
+     * Runs the command.
      * <p>
-     * Clears both order TreeMaps and the HashMap.
+     * Clears the order book.
      *
-     * @param buyOrders  the buy orders in a nested TreeMap (keys: price, time)
-     * @param sellOrders the sell orders in a nested TreeMap (keys: price, time)
-     * @param idToOrder  a HashMap from order IDs to Order instances
+     * @param orderBook the order book
      */
     @Override
-    public void execute(
-            TreeMap<Integer, TreeMap<Integer, Order>> buyOrders,
-            TreeMap<Integer, TreeMap<Integer, Order>> sellOrders,
-            HashMap<String, Order> idToOrder) {
-        buyOrders.clear();
-        sellOrders.clear();
-        idToOrder.clear();
+    public void run(OrderBook orderBook) {
+        orderBook.getBuyOrders().clear();
+        orderBook.getSellOrders().clear();
+        orderBook.getIdToOrder().clear();
+    }
+
+    /**
+     * Updates the OHCL if not null.
+     *
+     * @param ohlc  the ohlc
+     * @param value the updated value (-1 if not defined)
+     */
+    @Override
+    protected void updateOhlc(Ohlc ohlc, int value) {
+        if (ohlc != null) {
+            ohlc.update(time, value);
+        }
     }
 }
