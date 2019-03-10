@@ -1,12 +1,11 @@
 package com.arm;
 
-import java.util.HashMap;
 import java.util.TreeMap;
 
 /**
  * Command class for adding a new order.
  */
-class AddOrderCommand implements Command {
+class AddOrderCommand extends Command {
     private final Order order;
 
     /**
@@ -19,25 +18,33 @@ class AddOrderCommand implements Command {
     }
 
     /**
-     * Executes the command.
+     * Runs the command.
      * <p>
-     * Adds the order to the appropriate TreeMap and the HashMap.
+     * Adds the new order to the order book.
      *
-     * @param buyOrders  the buy orders in a nested TreeMap (keys: price, time)
-     * @param sellOrders the sell orders in a nested TreeMap (keys: price, time)
-     * @param idToOrder  a HashMap from order IDs to Order instances
+     * @param orderBook the order book
      */
     @Override
-    public void execute(
-            TreeMap<Integer, TreeMap<Integer, Order>> buyOrders,
-            TreeMap<Integer, TreeMap<Integer, Order>> sellOrders,
-            HashMap<String, Order> idToOrder) {
-        idToOrder.put(order.getId(), order);
+    public void run(OrderBook orderBook) {
+        orderBook.getIdToOrder().put(order.getId(), order);
 
         if (order.getSide() == OrderSide.BUY) {
-            addOrderTo(buyOrders);
+            addOrderTo(orderBook.getBuyOrders());
         } else {
-            addOrderTo(sellOrders);
+            addOrderTo(orderBook.getSellOrders());
+        }
+    }
+
+    /**
+     * Updates the OHCL if not null.
+     *
+     * @param ohlc  the ohlc
+     * @param value the updated value (-1 if not defined)
+     */
+    @Override
+    protected void updateOhlc(Ohlc ohlc, int value) {
+        if (ohlc != null) {
+            ohlc.update(order.getTime(), value);
         }
     }
 

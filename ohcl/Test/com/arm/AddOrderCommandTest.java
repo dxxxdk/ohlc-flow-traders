@@ -12,9 +12,10 @@ class AddOrderCommandTest {
 
     private final Order sellOrder = new Order(2, "sellOrder", OrderSide.SELL, 10, 11);
 
-    private final TreeMap<Integer, TreeMap<Integer, Order>> buyOrders = new TreeMap<>();
-    private final TreeMap<Integer, TreeMap<Integer, Order>> sellOrders = new TreeMap<>();
-    private final HashMap<String, Order> idToOrder = new HashMap<>();
+    private final OrderBook orderBook = new OrderBook();
+    private final TreeMap<Integer, TreeMap<Integer, Order>> buyOrders = orderBook.getBuyOrders();
+    private final TreeMap<Integer, TreeMap<Integer, Order>> sellOrders = orderBook.getSellOrders();
+    private final HashMap<String, Order> idToOrder = orderBook.getIdToOrder();
 
 
     @Test
@@ -23,7 +24,7 @@ class AddOrderCommandTest {
         assertEquals(0, buyOrders.size());
         assertEquals(0, idToOrder.size());
 
-        addOrderCommand.execute(buyOrders, sellOrders, idToOrder);
+        addOrderCommand.execute(orderBook, null);
         assertEquals(1, buyOrders.size());
         assertEquals(buyOrder, buyOrders.get(buyOrder.getPrice()).get(buyOrder.getTime()));
         assertEquals(0, sellOrders.size());
@@ -37,7 +38,7 @@ class AddOrderCommandTest {
         assertEquals(0, sellOrders.size());
         assertEquals(0, idToOrder.size());
 
-        addOrderCommand.execute(buyOrders, sellOrders, idToOrder);
+        addOrderCommand.execute(orderBook, null);
         assertEquals(1, sellOrders.size());
         assertEquals(sellOrder, sellOrders.get(sellOrder.getPrice()).get(sellOrder.getTime()));
         assertEquals(0, buyOrders.size());
