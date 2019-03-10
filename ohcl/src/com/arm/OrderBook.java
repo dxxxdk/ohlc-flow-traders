@@ -56,4 +56,18 @@ class OrderBook {
     int getAsk() {
         return sellOrders.firstEntry().getKey();
     }
+
+    /**
+     * @return the buy order with the highest price that was placed first
+     */
+    Order getHighestBuyOrder() {
+        return buyOrders.lastEntry().getValue().firstEntry().getValue();
+    }
+
+    /**
+     * @return the sell order with the lowest price that was placed first
+     */
+    Order getLowestSellOrder() {
+        return sellOrders.firstEntry().getValue().firstEntry().getValue();
+    }
 }
