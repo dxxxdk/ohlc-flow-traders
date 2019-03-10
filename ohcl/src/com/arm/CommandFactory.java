@@ -10,7 +10,7 @@ class CommandFactory {
      * @return a Command instance defined by inputRecord or null if inputRecord is not formatted as expected
      */
     static Command parse(String inputRecord) {
-        String[] inputRecordParts = inputRecord.split(" "); // TODO: use \t
+        String[] inputRecordParts = inputRecord.split("\t");
         try {
             int time = Integer.parseInt(inputRecordParts[0]);
             String commandName = inputRecordParts[1];
