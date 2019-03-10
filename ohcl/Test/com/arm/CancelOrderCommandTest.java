@@ -13,9 +13,10 @@ class CancelOrderCommandTest {
 
     private final Order sellOrderToCancel = new Order(2, "sellOrderToCancel", OrderSide.SELL, 10, 11);
 
-    private final TreeMap<Integer, TreeMap<Integer, Order>> buyOrders = new TreeMap<>();
-    private final TreeMap<Integer, TreeMap<Integer, Order>> sellOrders = new TreeMap<>();
-    private final HashMap<String, Order> idToOrder = new HashMap<>();
+    private final OrderBook orderBook = new OrderBook();
+    private final TreeMap<Integer, TreeMap<Integer, Order>> buyOrders = orderBook.getBuyOrders();
+    private final TreeMap<Integer, TreeMap<Integer, Order>> sellOrders = orderBook.getSellOrders();
+    private final HashMap<String, Order> idToOrder = orderBook.getIdToOrder();
 
     @BeforeEach
     void setUp() {
@@ -38,7 +39,7 @@ class CancelOrderCommandTest {
         assertEquals(1, buyOrders.size());
         assertEquals(2, idToOrder.size());
 
-        cancelOrderCommand.execute(buyOrders, sellOrders, idToOrder);
+        cancelOrderCommand.execute(orderBook, null);
 
         assertEquals(0, buyOrders.size());
         assertEquals(1, sellOrders.size());
@@ -52,7 +53,7 @@ class CancelOrderCommandTest {
         assertEquals(1, sellOrders.size());
         assertEquals(2, idToOrder.size());
 
-        cancelOrderCommand.execute(buyOrders, sellOrders, idToOrder);
+        cancelOrderCommand.execute(orderBook, null);
 
         assertEquals(0, sellOrders.size());
         assertEquals(1, buyOrders.size());

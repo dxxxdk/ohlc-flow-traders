@@ -1,12 +1,11 @@
 package com.arm;
 
-import java.util.HashMap;
 import java.util.TreeMap;
 
 /**
  * Command class for canceling an existing order.
  */
-public class CancelOrderCommand implements Command {
+public class CancelOrderCommand extends Command {
     private final int time;
     private final String id;
 
@@ -22,25 +21,33 @@ public class CancelOrderCommand implements Command {
     }
 
     /**
-     * Executes the command.
+     * Runs the command.
      * <p>
-     * Removes the order from its TreeMap and the HashMap.
+     * Removes the order from the order book.
      *
-     * @param buyOrders  the buy orders in a nested TreeMap (keys: price, time)
-     * @param sellOrders the sell orders in a nested TreeMap (keys: price, time)
-     * @param idToOrder  a HashMap from order IDs to Order instances
+     * @param orderBook the order book
      */
     @Override
-    public void execute(
-            TreeMap<Integer, TreeMap<Integer, Order>> buyOrders,
-            TreeMap<Integer, TreeMap<Integer, Order>> sellOrders,
-            HashMap<String, Order> idToOrder) {
-        Order order = idToOrder.get(id);
-        idToOrder.remove(id);
+    public void run(OrderBook orderBook) {
+        Order order = orderBook.getIdToOrder().get(id);
+        orderBook.getIdToOrder().remove(id);
         if (order.getSide() == OrderSide.BUY) {
-            removeOrderFrom(order, buyOrders);
+            removeOrderFrom(order, orderBook.getBuyOrders());
         } else {
-            removeOrderFrom(order, sellOrders);
+            removeOrderFrom(order, orderBook.getSellOrders());
+        }
+    }
+
+    /**
+     * Updates the OHCL if not null.
+     *
+     * @param ohlc  the ohlc
+     * @param value the updated value (-1 if not defined)
+     */
+    @Override
+    protected void updateOhlc(Ohlc ohlc, int value) {
+        if (ohlc != null) {
+            ohlc.update(time, value);
         }
     }
 
