@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AddOrderCommandTest {
     private final Order buyOrder = new Order(1, "buyOrder", OrderSide.BUY, 1, 10);
@@ -19,28 +20,28 @@ class AddOrderCommandTest {
     @Test
     void execute_addsBuyOrder_emptyMaps() {
         AddOrderCommand addOrderCommand = new AddOrderCommand(buyOrder);
-        assert buyOrders.size() == 0;
-        assert idToOrder.size() == 0;
+        assertEquals(0, buyOrders.size());
+        assertEquals(0, idToOrder.size());
 
         addOrderCommand.execute(buyOrders, sellOrders, idToOrder);
-        assert buyOrders.size() == 1;
-        assert buyOrders.get(buyOrder.getPrice()).get(buyOrder.getTime()) == buyOrder;
-        assert sellOrders.size() == 0;
-        assert idToOrder.size() == 1;
-        assert idToOrder.get(buyOrder.getId()) == buyOrder;
+        assertEquals(1, buyOrders.size());
+        assertEquals(buyOrder, buyOrders.get(buyOrder.getPrice()).get(buyOrder.getTime()));
+        assertEquals(0, sellOrders.size());
+        assertEquals(1, idToOrder.size());
+        assertEquals(buyOrder, idToOrder.get(buyOrder.getId()));
     }
 
     @Test
     void execute_addsSellOrder_emptyMaps() {
         AddOrderCommand addOrderCommand = new AddOrderCommand(sellOrder);
-        assert sellOrders.size() == 0;
-        assert idToOrder.size() == 0;
+        assertEquals(0, sellOrders.size());
+        assertEquals(0, idToOrder.size());
 
         addOrderCommand.execute(buyOrders, sellOrders, idToOrder);
-        assert sellOrders.size() == 1;
-        assert sellOrders.get(sellOrder.getPrice()).get(sellOrder.getTime()) == sellOrder;
-        assert buyOrders.size() == 0;
-        assert idToOrder.size() == 1;
-        assert idToOrder.get(sellOrder.getId()) == sellOrder;
+        assertEquals(1, sellOrders.size());
+        assertEquals(sellOrder, sellOrders.get(sellOrder.getPrice()).get(sellOrder.getTime()));
+        assertEquals(0, buyOrders.size());
+        assertEquals(1, idToOrder.size());
+        assertEquals(sellOrder, idToOrder.get(sellOrder.getId()));
     }
 }
